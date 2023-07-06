@@ -167,5 +167,43 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 } | Should -Throw "*disallowed by policy*"
             }
         }
+
+        It "Should deny non-compliant port ranges (Array)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-60" {
+            AzTest -ResourceGroup {
+                param($ResourceGroup)
+
+                $networkSecurityGroup = New-AzNetworkSecurityGroup `
+                -Name "nsg-test" `
+                -ResourceGroupName $ResourceGroup.ResourceGroupName `
+                -Location $ResourceGroup.Location
+
+                # Should be disallowed by policy, so exception should be thrown.
+                {
+                    $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
+                        -Name RDP-rule `
+                        -Description "Allow Mgmt" `
+                        -Access Allow `
+                        -Protocol Tcp `
+                        -Direction Inbound `
+                        -Priority 200 `
+                        -SourceAddressPrefix * `
+                        -SourcePortRange * `
+                        -DestinationAddressPrefix * `
+                        -DestinationPortRange 443 
+                    | Add-AzNetworkSecurityRuleConfig `
+                        -Name RDP-rule `
+                        -Description "Allow Mgmt" `
+                        -Access Allow `
+                        -Protocol Tcp `
+                        -Direction Inbound `
+                        -Priority 200 `
+                        -SourceAddressPrefix * `
+                        -SourcePortRange * `
+                        -DestinationAddressPrefix * `
+                        -DestinationPortRange "21-23" # Incompliant.
+                    | Set-AzNetworkSecurityGroup
+                } | Should -Throw "*disallowed by policy*"
+            }
+        }
     }
 }
