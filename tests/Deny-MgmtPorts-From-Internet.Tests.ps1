@@ -6,11 +6,9 @@ Import-Module "$($PSScriptRoot)/../utils/Rest.Utils.psm1" -Force
 Import-Module "$($PSScriptRoot)/../utils/Test.Utils.psm1" -Force
 
 Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-from-internet" {
-    # Create or update route is actually the same PUT request, hence testing create covers update as well.
-    # PATCH requests are currently not supported in Network Resource Provider.
-    # See also: https://docs.microsoft.com/en-us/rest/api/virtualnetwork/routes/createorupdate
+    # Create or update NSG is actually the same PUT request, hence testing create covers update as well.
     Context "When NSG is created or updated" -Tag "deny-mgmtports-from-internet-nsg-port" {
-        It "Should deny incompliant port '3389'" -Tag "deny-route-nexthopvirtualappliance-nsg-port-3389" {
+        It "Should deny incompliant port '3389'" -Tag "deny-route-nexthopvirtualappliance-nsg-port-10" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
