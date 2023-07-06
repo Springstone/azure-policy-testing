@@ -173,7 +173,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 param($ResourceGroup)
 
                 $networkSecurityGroup = New-AzNetworkSecurityGroup `
-                -Name "nsg-test" `
+                -Name "nsg-test2" `
                 -ResourceGroupName $ResourceGroup.ResourceGroupName `
                 -Location $ResourceGroup.Location
 
