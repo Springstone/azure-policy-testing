@@ -196,7 +196,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
-                        -Priority 200 `
+                        -Priority 210 `
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
