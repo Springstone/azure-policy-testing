@@ -32,7 +32,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
                         -DestinationPortRange 3389 # Incompliant.
-                    Set-AzNetworkSecurityGroup
+                    | Set-AzNetworkSecurityGroup
                 } | Should -Throw "*RequestDisallowedByPolicy*Deny-MgmtPorts-From-Internet*"
             }
         }
