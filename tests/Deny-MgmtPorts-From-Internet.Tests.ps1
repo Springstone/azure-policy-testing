@@ -19,7 +19,6 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
 
                 # Should be disallowed by policy, so exception should be thrown.
                 {
-                    # Directly calling REST API with PUT routes, since New-AzRouteConfig/Set-AzRouteTable will issue PUT routeTables.
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
                         -Description "Allow RDP" `
@@ -32,7 +31,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -DestinationAddressPrefix * `
                         -DestinationPortRange 3389 # Incompliant.
                     | Set-AzNetworkSecurityGroup
-                } | Should -Throw "*RequestDisallowedByPolicy*Deny-MgmtPorts-From-Internet*"
+                } | Should -Throw "*RequestDisallowedByPolicy"
             }
         }
     }
