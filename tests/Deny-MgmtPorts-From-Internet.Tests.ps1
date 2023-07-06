@@ -83,7 +83,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange '21-23',3389 # Incompliant.
+                        -DestinationPortRange "21-23,3389" # Incompliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Throw "*disallowed by policy*"
             }
@@ -110,7 +110,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange 80,443 # Incompliant.
+                        -DestinationPortRange "80,443" # Incompliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Not -Throw
             }
