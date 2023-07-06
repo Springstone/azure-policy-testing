@@ -19,6 +19,8 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     -ResourceGroupName $ResourceGroup.ResourceGroupName `
                     -Location $ResourceGroup.Location
 
+                    Set-AzNetworkSecurityGroup -NetworkSecurityGroup $networkSecurityGroup
+
                     # Directly calling REST API with PUT routes, since New-AzRouteConfig/Set-AzRouteTable will issue PUT routeTables.
                     New-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
