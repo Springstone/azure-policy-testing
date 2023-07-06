@@ -135,7 +135,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange "443" # Compliant.
+                        -DestinationPortRange "80,443" # Compliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Not -Throw
             }
