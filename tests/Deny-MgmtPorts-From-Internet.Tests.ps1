@@ -22,7 +22,6 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     # Directly calling REST API with PUT routes, since New-AzRouteConfig/Set-AzRouteTable will issue PUT routeTables.
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
-                        #-NetworkSecurityGroup $networkSecurityGroup `
                         -Description "Allow RDP" `
                         -Access Allow `
                         -Protocol Tcp `
