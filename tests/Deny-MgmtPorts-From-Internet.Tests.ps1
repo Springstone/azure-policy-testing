@@ -35,6 +35,31 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
+        It "Should deny non-compliant port '3389' inline" -Tag "deny-route-nexthopvirtualappliance-nsg-port-10" {
+            AzTest -ResourceGroup {
+                param($ResourceGroup)
+
+                # Should be disallowed by policy, so exception should be thrown.
+                {
+                    New-AzNetworkSecurityGroup `
+                        -Name "nsg-test" `
+                        -ResourceGroupName $ResourceGroup.ResourceGroupName `
+                        -Location $ResourceGroup.Location | Add-AzNetworkSecurityRuleConfig `
+                        -Name RDP-rule `
+                        -Description "Allow RDP" `
+                        -Access Allow `
+                        -Protocol Tcp `
+                        -Direction Inbound `
+                        -Priority 200 `
+                        -SourceAddressPrefix * `
+                        -SourcePortRange * `
+                        -DestinationAddressPrefix * `
+                        -DestinationPortRange 3389 # Incompliant.
+                    | Set-AzNetworkSecurityGroup
+                } | Should -Throw "*disallowed by policy*"
+            }
+        }
+
         It "Should deny non-compliant port '22'" -Tag "deny-route-nexthopvirtualappliance-nsg-port-20" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
@@ -110,7 +135,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange "80,443" # Incompliant.
+                        -DestinationPortRange "80,443" # Compliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Not -Throw
             }
