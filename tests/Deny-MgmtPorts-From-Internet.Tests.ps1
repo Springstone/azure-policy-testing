@@ -72,7 +72,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
+                        -Name SSH-rule `
                         -Description "Allow SSH" `
                         -Access Allow `
                         -Protocol Tcp `
@@ -81,7 +81,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange 80 # Incompliant.
+                        -DestinationPortRange 22 # Incompliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Throw "*disallowed by policy*"
             }
@@ -99,7 +99,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
+                        -Name SSH-rulePlus `
                         -Description "Allow Mgmt" `
                         -Access Allow `
                         -Protocol Tcp `
@@ -126,7 +126,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
+                        -Name web-rule `
                         -Description "Allow Web" `
                         -Access Allow `
                         -Protocol Tcp `
@@ -192,7 +192,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -DestinationPortRange 443 
                     | Add-AzNetworkSecurityRuleConfig `
                         -Name SSH-rule `
-                        -Description "Allow Mgmt" `
+                        -Description "Allow Mgmt2" `
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
