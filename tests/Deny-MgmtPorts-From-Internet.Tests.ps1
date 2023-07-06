@@ -2,7 +2,7 @@ Import-Module -Name Az.Network
 Import-Module -Name Az.Resources
 Import-Module "$($PSScriptRoot)/../utils/Policy.Utils.psm1" -Force
 Import-Module "$($PSScriptRoot)/../utils/Rest.Utils.psm1" -Force
-Import-Module "$($PSScriptRoot)/../utils/RouteTable.Utils.psm1" -Force
+#Import-Module "$($PSScriptRoot)/../utils/RouteTable.Utils.psm1" -Force
 Import-Module "$($PSScriptRoot)/../utils/Test.Utils.psm1" -Force
 
 Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-from-internet" {
