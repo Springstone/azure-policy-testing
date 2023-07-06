@@ -141,7 +141,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges" -Tag "deny-route-nexthopvirtualappliance-nsg-port-50" {
+        It "Should deny non-compliant port ranges (Test)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-50" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -162,7 +162,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
-                        -DestinationPortRange "21-23,3389,80" # Incompliant.
+                        -DestinationPortRange "22-3390" # Incompliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Throw "*disallowed by policy*"
             }
