@@ -87,7 +87,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges" -Tag "deny-route-nexthopvirtualappliance-nsg-port-30" {
+        It "Should deny non-compliant port ranges (21-23)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-30" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -114,7 +114,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should allow compliant port ranges" -Tag "deny-route-nexthopvirtualappliance-nsg-port-40" {
+        It "Should allow compliant ports (443)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-40" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
