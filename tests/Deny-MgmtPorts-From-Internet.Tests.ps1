@@ -15,10 +15,10 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $networkSecurityGroup = New-AzNetworkSecurityGroup `
-                    -Name "nsg-test" `
+                    -Name "nsg-test10" `
                     -ResourceGroupName $ResourceGroup.ResourceGroupName `
                     -Location $ResourceGroup.Location
-                    
+
                     # Directly calling REST API with PUT routes, since New-AzRouteConfig/Set-AzRouteTable will issue PUT routeTables.
                     New-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
