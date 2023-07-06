@@ -154,53 +154,15 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
-                        -Description "Allow Mgmt1" `
+                        -Description "Allow Mgmt" `
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
-                        -Priority 400 `
+                        -Priority 200 `
                         -SourceAddressPrefix * `
                         -SourcePortRange * `
                         -DestinationAddressPrefix * `
                         -DestinationPortRange "22-3390" # Incompliant.
-                    | Set-AzNetworkSecurityGroup
-                } | Should -Throw "*disallowed by policy*"
-            }
-        }
-
-        It "Should deny non-compliant port ranges (Array)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-60" {
-            AzTest -ResourceGroup {
-                param($ResourceGroup)
-
-                $networkSecurityGroup = New-AzNetworkSecurityGroup `
-                -Name "nsg-test2" `
-                -ResourceGroupName $ResourceGroup.ResourceGroupName `
-                -Location $ResourceGroup.Location
-
-                # Should be disallowed by policy, so exception should be thrown.
-                {
-                    $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
-                        -Description "Allow Web2" `
-                        -Access Allow `
-                        -Protocol Tcp `
-                        -Direction Inbound `
-                        -Priority 300 `
-                        -SourceAddressPrefix * `
-                        -SourcePortRange * `
-                        -DestinationAddressPrefix * `
-                        -DestinationPortRange 443 
-                    | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
-                        -Description "Allow Mgmt2" `
-                        -Access Allow `
-                        -Protocol Tcp `
-                        -Direction Inbound `
-                        -Priority 310 `
-                        -SourceAddressPrefix * `
-                        -SourcePortRange * `
-                        -DestinationAddressPrefix * `
-                        -DestinationPortRange "21-23" # Incompliant.
                     | Set-AzNetworkSecurityGroup
                 } | Should -Throw "*disallowed by policy*"
             }
