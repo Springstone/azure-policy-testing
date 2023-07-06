@@ -5,7 +5,7 @@ on:
       - main
     paths:
       - ".github/workflows/**"
-      - "policies/**"
+      #- "policies/**"
       - "tests/**"
       - "utils/**"
   workflow_dispatch:
@@ -29,12 +29,12 @@ jobs:
         with:
           creds: ${{secrets.AZURE_CREDENTIALS}}
           enable-AzPSSession: true
-      - name: Create or update Azure Policies
-        shell: pwsh
-        run: |
-          Get-ChildItem -Path "./policies" | ForEach-Object {
-            New-AzDeployment -Location "northeurope" -TemplateFile $_.FullName
-          }
+      # - name: Create or update Azure Policies
+      #   shell: pwsh
+      #   run: |
+      #     Get-ChildItem -Path "./policies" | ForEach-Object {
+      #       New-AzDeployment -Location "northeurope" -TemplateFile $_.FullName
+      #     }
       # Logout/Login to Azure to ensure that the latest policies are applied
       - name: Logout of Azure
         shell: pwsh
