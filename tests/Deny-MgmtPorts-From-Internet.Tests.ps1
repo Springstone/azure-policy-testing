@@ -181,7 +181,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
                         -Name RDP-rule `
-                        -Description "Allow Mgmt" `
+                        -Description "Allow Web" `
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
