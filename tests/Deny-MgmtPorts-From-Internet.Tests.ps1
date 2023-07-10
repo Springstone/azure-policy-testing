@@ -212,7 +212,46 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
 
                 #Destination port ranges to test
                 $portRanges =  @("23","3388-3390","8080")
-                $payload = CreatePayload -portRanges $portRanges
+
+                $securityRules = @(
+                    @{
+                        name = "Web-rule"
+                        properties = @{
+                            description = "Allow Web2"
+                            protocol = "Tcp"
+                            sourcePortRange = "*"
+                            destinationPortRange = "443"
+                            sourceAddressPrefix = "*"
+                            destinationAddressPrefix = "*"
+                            access = "Allow"
+                            priority = 300
+                            direction = "Inbound"
+                        }
+                    },
+                    @{
+                        name = "Multi-rule"
+                        properties = @{
+                            description = "Allow Mgmt3"
+                            protocol = "Tcp"
+                            sourcePortRange = "*"
+                            destinationPortRanges = $portRanges
+                            sourceAddressPrefix = "*"
+                            destinationAddressPrefix = "*"
+                            access = "Allow"
+                            priority = 310
+                            direction = "Inbound"
+                        }
+                    }
+                )
+
+                $object = @{
+                    properties = @{
+                        securityRules = $securityRules
+                    }
+                    location = "uksouth"
+                }
+
+                $payload = ConvertTo-Json -InputObject $object -Depth 100
 
                 # Should be disallowed by policy, so exception should be thrown.
                 {
@@ -220,18 +259,18 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -ResourceGroupName $ResourceGroup `
                         -ResourceProviderName "Microsoft.Network" `
                         -ResourceType "networkSecurityGroups" `
-                        -Name "testNSG99" `
+                        -Name "testNSG98" `
                         -ApiVersion "2022-11-01" `
                         -Method "PUT" `
                         -Payload $payload
             
-                    if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
-                        # NSG created
-                    }
-                    # Error response describing why the operation failed.
-                    else {
-                        throw "Operation failed with message: '$($httpResponse.Content)'"
-                    }              
+                if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
+                    # NSG created
+                }
+                # Error response describing why the operation failed.
+                else {
+                    throw "Operation failed with message: '$($httpResponse.Content)'"
+                }              
                 } | Should -Throw "*disallowed by policy*"
             }
         }
@@ -242,7 +281,47 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
 
                 #Destination port ranges to test
                 $portRanges =  @("23","3390-3392","8080")
-                $payload = CreatePayload -portRanges $portRanges
+
+                # Create Payload for NSG
+                $securityRules = @(
+                    @{
+                        name = "Web-rule"
+                        properties = @{
+                            description = "Allow Web2"
+                            protocol = "Tcp"
+                            sourcePortRange = "*"
+                            destinationPortRange = "443"
+                            sourceAddressPrefix = "*"
+                            destinationAddressPrefix = "*"
+                            access = "Allow"
+                            priority = 300
+                            direction = "Inbound"
+                        }
+                    },
+                    @{
+                        name = "Multi-rule"
+                        properties = @{
+                            description = "Allow Mgmt3"
+                            protocol = "Tcp"
+                            sourcePortRange = "*"
+                            destinationPortRanges = $portRanges
+                            sourceAddressPrefix = "*"
+                            destinationAddressPrefix = "*"
+                            access = "Allow"
+                            priority = 310
+                            direction = "Inbound"
+                        }
+                    }
+                )
+
+                $object = @{
+                    properties = @{
+                        securityRules = $securityRules
+                    }
+                    location = "uksouth"
+                }
+
+                $payload = ConvertTo-Json -InputObject $object -Depth 100
 
                 # Should be disallowed by policy, so exception should be thrown.
                 {
@@ -255,63 +334,15 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -Method "PUT" `
                         -Payload $payload
             
-                    if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
-                        # NSG created
-                    }
-                    # Error response describing why the operation failed.
-                    else {
-                        throw "Operation failed with message: '$($httpResponse.Content)'"
-                    }              
+                if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
+                    # NSG created
+                }
+                # Error response describing why the operation failed.
+                else {
+                    throw "Operation failed with message: '$($httpResponse.Content)'"
+                }              
                 } | Should Not -Throw
             }
         }
     }
-}
-
-function CreatePayload {
-    param (
-        [string[]]$portRanges
-    ) 
-
-    $securityRules = @(
-        @{
-            name = "Web-rule"
-            properties = @{
-                description = "Allow Web2"
-                protocol = "Tcp"
-                sourcePortRange = "*"
-                destinationPortRange = "443"
-                sourceAddressPrefix = "*"
-                destinationAddressPrefix = "*"
-                access = "Allow"
-                priority = 300
-                direction = "Inbound"
-            }
-        },
-        @{
-            name = "Multi-rule"
-            properties = @{
-                description = "Allow Mgmt3"
-                protocol = "Tcp"
-                sourcePortRange = "*"
-                destinationPortRanges = $portRanges
-                sourceAddressPrefix = "*"
-                destinationAddressPrefix = "*"
-                access = "Allow"
-                priority = 310
-                direction = "Inbound"
-            }
-        }
-    )
-
-    $object = @{
-        properties = @{
-            securityRules = $securityRules
-        }
-        location = "uksouth"
-    }
-
-    $payload = ConvertTo-Json -InputObject $object -Depth 100
-
-    return $payload
 }
