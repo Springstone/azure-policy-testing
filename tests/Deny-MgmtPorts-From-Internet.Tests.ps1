@@ -217,6 +217,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     $payload = @"
 {
     "properties": {
+        "location": "uksouth",
         "securityRules": [
             {
                 "name": "Web-rule",
