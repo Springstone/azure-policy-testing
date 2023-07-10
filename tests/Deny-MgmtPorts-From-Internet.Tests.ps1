@@ -210,14 +210,11 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
-                $portRanges =  "['21-23', '25-3390', '8080']"
-
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $payload = @"
 {
     "properties": {
-        "location": "uksouth",
         "securityRules": [
             {
                 "name": "Web-rule",
@@ -239,7 +236,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     "description": "Allow Mgmt3",
                     "protocol": "Tcp",
                     "sourcePortRange": "*",
-                    "destinationPortRanges": "$($portRanges)",
+                    "destinationPortRanges": ["23","3388-3390","8080"],
                     "sourceAddressPrefix": "*",
                     "destinationAddressPrefix": "*",
                     "access": "Allow",
@@ -248,7 +245,8 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 }
             }
         ]
-    }
+    },
+    "location": "uksouth"
 }
 "@
 
