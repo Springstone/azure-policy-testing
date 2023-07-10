@@ -256,7 +256,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $httpResponse = Invoke-AzRestMethod `
-                        -ResourceGroupName $ResourceGroup `
+                        -ResourceGroupName $ResourceGroup.ResourceGroupName `
                         -ResourceProviderName "Microsoft.Network" `
                         -ResourceType "networkSecurityGroups" `
                         -Name "testNSG98" `
@@ -326,7 +326,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 # Should be disallowed by policy, so exception should be thrown.
                 {
                     $httpResponse = Invoke-AzRestMethod `
-                        -ResourceGroupName $ResourceGroup `
+                        -ResourceGroupName $ResourceGroup.ResourceGroupName `
                         -ResourceProviderName "Microsoft.Network" `
                         -ResourceType "networkSecurityGroups" `
                         -Name "testNSG99" `
