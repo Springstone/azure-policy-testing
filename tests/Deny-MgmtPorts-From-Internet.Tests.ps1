@@ -152,7 +152,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges* (multi-rule) - API" -Tag "deny-noncompliant-nsg-port-60" {
+        It "Should deny non-compliant port ranges* - API" -Tag "deny-noncompliant-nsg-port-60" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
