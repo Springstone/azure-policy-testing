@@ -276,6 +276,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             
                 if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
                     # All good, do nothing
+                    throw "Operation succeeded with message: '$($httpResponse.Content)'"
                 }
                 # Error response describing why the operation failed.
                 else {
