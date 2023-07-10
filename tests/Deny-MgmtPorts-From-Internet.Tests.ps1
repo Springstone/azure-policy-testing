@@ -210,46 +210,11 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
+                #Destination port ranges to test
+                $portRanges =  @("23","3388-3390","8080")
+
                 # Should be disallowed by policy, so exception should be thrown.
                 {
-                    $payload = @"
-{
-    "properties": {
-        "securityRules": [
-            {
-                "name": "Web-rule",
-                "properties": {
-                    "description": "Allow Web2",
-                    "protocol": "Tcp",
-                    "sourcePortRange": "*",
-                    "destinationPortRange": "443",
-                    "sourceAddressPrefix": "*",
-                    "destinationAddressPrefix": "*",
-                    "access": "Allow",
-                    "priority": 300,
-                    "direction": "Inbound"
-                }
-            },
-            {
-                "name": "Multi-rule",
-                "properties": {
-                    "description": "Allow Mgmt3",
-                    "protocol": "Tcp",
-                    "sourcePortRange": "*",
-                    "destinationPortRanges": ["23","3388-3390","8080"],
-                    "sourceAddressPrefix": "*",
-                    "destinationAddressPrefix": "*",
-                    "access": "Allow",
-                    "priority": 310,
-                    "direction": "Inbound"
-                }
-            }
-        ]
-    },
-    "location": "uksouth"
-}
-"@
-
                     $httpResponse = Invoke-AzRestMethod `
                         -ResourceGroupName $ResourceGroup `
                         -ResourceProviderName "Microsoft.Network" `
@@ -257,7 +222,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -Name "testNSG99" `
                         -ApiVersion "2022-11-01" `
                         -Method "PUT" `
-                        -Payload $payload
+                        -Payload CreatePayload($portRanges)
             
                 if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
                     # NSG created
@@ -274,48 +239,8 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
-                $portRanges =  @("23","3388-3390","8080")
-
-                # Create Payload for NSG
-                $securityRules = @(
-                    @{
-                        name = "Web-rule"
-                        properties = @{
-                            description = "Allow Web2"
-                            protocol = "Tcp"
-                            sourcePortRange = "*"
-                            destinationPortRange = "443"
-                            sourceAddressPrefix = "*"
-                            destinationAddressPrefix = "*"
-                            access = "Allow"
-                            priority = 300
-                            direction = "Inbound"
-                        }
-                    },
-                    @{
-                        name = "Multi-rule"
-                        properties = @{
-                            description = "Allow Mgmt3"
-                            protocol = "Tcp"
-                            sourcePortRange = "*"
-                            destinationPortRanges = $portRanges
-                            sourceAddressPrefix = "*"
-                            destinationAddressPrefix = "*"
-                            access = "Allow"
-                            priority = 310
-                            direction = "Inbound"
-                        }
-                    }
-                )
-
-                $object = @{
-                    properties = @{
-                        securityRules = $securityRules
-                    }
-                    location = "uksouth"
-                }
-
-                $payload = ConvertTo-Json -InputObject $object -Depth 100
+                #Destination port ranges to test
+                $portRanges =  @("23","3390-3392","8080")
 
                 # Should be disallowed by policy, so exception should be thrown.
                 {
@@ -326,7 +251,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -Name "testNSG99" `
                         -ApiVersion "2022-11-01" `
                         -Method "PUT" `
-                        -Payload $payload
+                        -Payload CreatePayload($portRanges)
             
                 if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
                     # NSG created
@@ -339,4 +264,52 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
     }
+}
+
+function CreatePayload {
+    param (
+        [string[]]$portRanges
+    ) 
+
+    $securityRules = @(
+        @{
+            name = "Web-rule"
+            properties = @{
+                description = "Allow Web2"
+                protocol = "Tcp"
+                sourcePortRange = "*"
+                destinationPortRange = "443"
+                sourceAddressPrefix = "*"
+                destinationAddressPrefix = "*"
+                access = "Allow"
+                priority = 300
+                direction = "Inbound"
+            }
+        },
+        @{
+            name = "Multi-rule"
+            properties = @{
+                description = "Allow Mgmt3"
+                protocol = "Tcp"
+                sourcePortRange = "*"
+                destinationPortRanges = $portRanges
+                sourceAddressPrefix = "*"
+                destinationAddressPrefix = "*"
+                access = "Allow"
+                priority = 310
+                direction = "Inbound"
+            }
+        }
+    )
+
+    $object = @{
+        properties = @{
+            securityRules = $securityRules
+        }
+        location = "uksouth"
+    }
+
+    $payload = ConvertTo-Json -InputObject $object -Depth 100
+
+    return $payload
 }
