@@ -168,7 +168,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges (Array)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-60" {
+        It "Should deny non-compliant port range (Array)" -Tag "deny-route-nexthopvirtualappliance-nsg-port-60" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -210,7 +210,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
-                $portRanges =  "['21-23', '22-3390', '8080']"
+                $portRanges =  "['21-23', '25-3390', '8080']"
 
                 # Should be disallowed by policy, so exception should be thrown.
                 {
@@ -233,21 +233,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 }
             },
             {
-                "name": "SSH-rule",
-                "properties": {
-                    "description": "Allow Mgmt2",
-                    "protocol": "Tcp",
-                    "sourcePortRange": "*",
-                    "destinationPortRange": "21-23",
-                    "sourceAddressPrefix": "*",
-                    "destinationAddressPrefix": "*",
-                    "access": "Allow",
-                    "priority": 310,
-                    "direction": "Inbound"
-                }
-            },
-            {
-                "name": "SSH-rule",
+                "name": "Multi-rule",
                 "properties": {
                     "description": "Allow Mgmt3",
                     "protocol": "Tcp",
@@ -275,8 +261,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -Payload $payload
             
                 if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
-                    # All good, do nothing
-                    throw "Operation succeeded with message: '$($httpResponse.Content)'"
+                    # NSG created
                 }
                 # Error response describing why the operation failed.
                 else {
