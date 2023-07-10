@@ -205,5 +205,84 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 } | Should -Throw "*disallowed by policy*"
             }
         }
+
+        It "Should deny non-compliant port ranges (Array) - API" -Tag "deny-route-nexthopvirtualappliance-nsg-port-70" {
+            AzTest -ResourceGroup {
+                param($ResourceGroup)
+
+                $portRanges =  "['21-23', '22-3390', '8080']"
+
+                # Should be disallowed by policy, so exception should be thrown.
+                {
+                    $payload = @"
+{
+    "properties": {
+        "securityRules": [
+            {
+                "name": "Web-rule",
+                "properties": {
+                    "description": "Allow Web2",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "443",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 300,
+                    "direction": "Inbound"
+                }
+            },
+            {
+                "name": "SSH-rule",
+                "properties": {
+                    "description": "Allow Mgmt2",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRange": "21-23",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 310,
+                    "direction": "Inbound"
+                }
+            },
+            {
+                "name": "SSH-rule",
+                "properties": {
+                    "description": "Allow Mgmt3",
+                    "protocol": "Tcp",
+                    "sourcePortRange": "*",
+                    "destinationPortRanges": "$($portRanges)",
+                    "sourceAddressPrefix": "*",
+                    "destinationAddressPrefix": "*",
+                    "access": "Allow",
+                    "priority": 310,
+                    "direction": "Inbound"
+                }
+            }
+        ]
+    }
+}
+"@
+
+                    $httpResponse = Invoke-AzRestMethod `
+                    -ResourceGroupName $ResourceGroup `
+                    -ResourceProviderName "Microsoft.Network" `
+                    -ResourceType @("networkSecurityGroups") `
+                    -Name @("testNSG99") `
+                    -ApiVersion "2022-11-01" `
+                    -Method "PUT"
+                    -Payload $payload
+            
+                if ($httpResponse.StatusCode -eq 200) {
+                    # All good, do nothing
+                }
+                # Error response describing why the operation failed.
+                else {
+                    throw "Operation failed with message: '$($httpResponse.Content)'"
+                }              
+                } | Should -Throw "*disallowed by policy*"
+            }
+        }
     }
 }
