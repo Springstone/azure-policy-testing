@@ -266,15 +266,15 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
 "@
 
                     $httpResponse = Invoke-AzRestMethod `
-                    -ResourceGroupName $ResourceGroup `
-                    -ResourceProviderName "Microsoft.Network" `
-                    -ResourceType @("networkSecurityGroups") `
-                    -Name @("testNSG99") `
-                    -ApiVersion "2022-11-01" `
-                    -Method "PUT"
-                    -Payload $payload
+                        -ResourceGroupName $ResourceGroup `
+                        -ResourceProviderName "Microsoft.Network" `
+                        -ResourceType "networkSecurityGroups" `
+                        -Name "testNSG99" `
+                        -ApiVersion "2022-11-01" `
+                        -Method "PUT" `
+                        -Payload $payload
             
-                if ($httpResponse.StatusCode -eq 200) {
+                if ($httpResponse.StatusCode -eq 200 -or $httpResponse.StatusCode -eq 201) {
                     # All good, do nothing
                 }
                 # Error response describing why the operation failed.
