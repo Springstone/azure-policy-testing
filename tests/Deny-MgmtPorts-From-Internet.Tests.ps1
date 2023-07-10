@@ -341,7 +341,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 else {
                     throw "Operation failed with message: '$($httpResponse.Content)'"
                 }              
-                } | Should Not -Throw
+                } | Should -Not -Throw
             }
         }
     }
