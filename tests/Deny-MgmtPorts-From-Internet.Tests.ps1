@@ -60,34 +60,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port '22'" -Tag "deny-noncompliant-nsg-port-30" {
-            AzTest -ResourceGroup {
-                param($ResourceGroup)
-
-                $networkSecurityGroup = New-AzNetworkSecurityGroup `
-                -Name "nsg-test" `
-                -ResourceGroupName $ResourceGroup.ResourceGroupName `
-                -Location $ResourceGroup.Location
-
-                # Should be disallowed by policy, so exception should be thrown.
-                {
-                    $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name SSH-rule `
-                        -Description "Allow SSH" `
-                        -Access Allow `
-                        -Protocol Tcp `
-                        -Direction Inbound `
-                        -Priority 200 `
-                        -SourceAddressPrefix * `
-                        -SourcePortRange * `
-                        -DestinationAddressPrefix * `
-                        -DestinationPortRange 22 # Incompliant.
-                    | Set-AzNetworkSecurityGroup
-                } | Should -Throw "*disallowed by policy*"
-            }
-        }
-
-        It "Should deny non-compliant port ranges (21-23)" -Tag "deny-noncompliant-nsg-port-40" {
+        It "Should deny non-compliant port range (21-23)" -Tag "deny-noncompliant-nsg-port-30" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -141,34 +114,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges (Test)" -Tag "deny-noncompliant-nsg-port-50" {
-            AzTest -ResourceGroup {
-                param($ResourceGroup)
-
-                $networkSecurityGroup = New-AzNetworkSecurityGroup `
-                -Name "nsg-test" `
-                -ResourceGroupName $ResourceGroup.ResourceGroupName `
-                -Location $ResourceGroup.Location
-
-                # Should be disallowed by policy, so exception should be thrown.
-                {
-                    $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
-                        -Name RDP-rule `
-                        -Description "Allow Mgmt" `
-                        -Access Allow `
-                        -Protocol Tcp `
-                        -Direction Inbound `
-                        -Priority 200 `
-                        -SourceAddressPrefix * `
-                        -SourcePortRange * `
-                        -DestinationAddressPrefix * `
-                        -DestinationPortRange "22-3390" # Incompliant.
-                    | Set-AzNetworkSecurityGroup
-                } | Should -Throw "*disallowed by policy*"
-            }
-        }
-
-        It "Should deny non-compliant port range (Array)" -Tag "deny-noncompliant-nsg-port-60" {
+        It "Should deny non-compliant port range (multi-rule)" -Tag "deny-noncompliant-nsg-port-50" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -181,7 +127,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                 {
                     $networkSecurityGroup | Add-AzNetworkSecurityRuleConfig `
                         -Name Web-rule `
-                        -Description "Allow Web2" `
+                        -Description "Allow Web" `
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
@@ -192,7 +138,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                         -DestinationPortRange 443 
                     | Add-AzNetworkSecurityRuleConfig `
                         -Name SSH-rule `
-                        -Description "Allow Mgmt2" `
+                        -Description "Allow Mgmt" `
                         -Access Allow `
                         -Protocol Tcp `
                         -Direction Inbound `
@@ -206,7 +152,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should deny non-compliant port ranges (Array) - API" -Tag "deny-noncompliant-nsg-port-70" {
+        It "Should deny non-compliant port ranges* (multi-rule) - API" -Tag "deny-noncompliant-nsg-port-60" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
@@ -217,7 +163,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     @{
                         name = "Web-rule"
                         properties = @{
-                            description = "Allow Web2"
+                            description = "Allow Web"
                             protocol = "Tcp"
                             sourcePortRange = "*"
                             destinationPortRange = "443"
@@ -231,7 +177,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
                     @{
                         name = "Multi-rule"
                         properties = @{
-                            description = "Allow Mgmt3"
+                            description = "Allow Mgmt"
                             protocol = "Tcp"
                             sourcePortRange = "*"
                             destinationPortRanges = $portRanges
@@ -275,7 +221,7 @@ Describe "Testing policy 'Deny-MgmtPorts-From-Internet'" -Tag "deny-mgmtports-fr
             }
         }
 
-        It "Should allow compliant port ranges (Array) - API" -Tag "allow-compliant-nsg-port-20" {
+        It "Should allow compliant port ranges* - API" -Tag "allow-compliant-nsg-port-20" {
             AzTest -ResourceGroup {
                 param($ResourceGroup)
 
