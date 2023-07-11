@@ -1,4 +1,4 @@
-name: test-policies-alt
+name: test-policies-v2
 on:
   push:
     branches:
