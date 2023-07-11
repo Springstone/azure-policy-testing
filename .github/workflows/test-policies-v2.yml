@@ -1,4 +1,4 @@
-name: unit-test-policies-v2
+name: test-policies-v2
 on:
   push:
     branches:
