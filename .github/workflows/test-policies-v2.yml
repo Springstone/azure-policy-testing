@@ -41,8 +41,9 @@ jobs:
             }
             Output = @{
               Verbosity = 'Detailed'
+              CIFormat = 'Auto'
             }
           }
-          $result = Invoke-Pester -Configuration $pesterConfiguration -CI
+          $result = Invoke-Pester -Configuration $pesterConfiguration
           exit $result.FailedCount
 
